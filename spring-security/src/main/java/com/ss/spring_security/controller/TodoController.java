@@ -21,7 +21,7 @@ import com.ss.spring_security.service.TodoService;
 
 import lombok.AllArgsConstructor;
 
-@CrossOrigin("https://localhost:3000")
+@CrossOrigin("http://localhost:3000/")
 @RequestMapping("/todos")
 @AllArgsConstructor
 @RestController
