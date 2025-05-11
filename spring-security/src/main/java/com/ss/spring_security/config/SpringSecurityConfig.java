@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration // Marks this class as configuration for Spring Security setup
+@EnableMethodSecurity // Enables method-level security annotations like @PreAuthorize, @Secured, and @RolesAllowed
 public class SpringSecurityConfig {
 
 	// Bean to create a PasswordEncoder using BCrypt for securely hashing passwords
@@ -31,11 +33,13 @@ public class SpringSecurityConfig {
 
 				// Require authentication for all HTTP requests
 				.authorizeHttpRequests((authorize) -> {
-					authorize.requestMatchers(HttpMethod.POST, "/todos/**").hasRole("ADMIN");
-					authorize.requestMatchers(HttpMethod.PUT, "/todos/**").hasRole("ADMIN");
-					authorize.requestMatchers(HttpMethod.DELETE,"/todos/**").hasRole("ADMIN");
-					authorize.requestMatchers(HttpMethod.GET,"/todos/**").hasAnyRole("ADMIN","USER");
-					authorize.requestMatchers(HttpMethod.PATCH,"/todos/**").hasAnyRole("ADMIN","USER");
+					
+//					authorize.requestMatchers(HttpMethod.POST, "/todos/**").hasRole("ADMIN");
+//					authorize.requestMatchers(HttpMethod.PUT, "/todos/**").hasRole("ADMIN");
+//					authorize.requestMatchers(HttpMethod.DELETE,"/todos/**").hasRole("ADMIN");
+//					authorize.requestMatchers(HttpMethod.GET,"/todos/**").hasAnyRole("ADMIN","USER");
+//					authorize.requestMatchers(HttpMethod.PATCH,"/todos/**").hasAnyRole("ADMIN","USER");
+					
 					authorize.anyRequest().authenticated();
 				})
 
