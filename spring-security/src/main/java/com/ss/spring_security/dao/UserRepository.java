@@ -8,9 +8,9 @@ import com.ss.spring_security.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long>{
 
-	Optional<User> findByUserName(String username);
+	Optional<User> findByUserName(String userName);
 	
 	Boolean existsByEmail(String email);
 	
-	Optional<User> findByUsernameOrEmail(String username , String email);
+	Optional<User> findByUserNameOrEmail(String userName , String email);
 }
