@@ -31,10 +31,13 @@ public class SpringSecurityConfig {
 		// This configures which HTTP requests need authentication
 
 		http.csrf(csrf -> csrf.disable()) // Disable CSRF (useful for APIs or development)
-			.authorizeHttpRequests(auth -> 
-				auth.anyRequest().authenticated() // All requests must be authenticated
-			)
-			.httpBasic(Customizer.withDefaults()); // Use HTTP Basic authentication (username & password in header)
+				.authorizeHttpRequests((auth) -> {
+
+					auth.requestMatchers("/auth/**").permitAll();
+
+					auth.anyRequest().authenticated(); // All requests must be authenticated
+				}).httpBasic(Customizer.withDefaults()); // Use HTTP Basic authentication (username & password in
+															// header)
 
 		return http.build(); // Build and return the SecurityFilterChain
 	}
