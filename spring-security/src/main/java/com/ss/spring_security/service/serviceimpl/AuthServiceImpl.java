@@ -1,6 +1,7 @@
 package com.ss.spring_security.service.serviceimpl;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.http.HttpStatus;
@@ -13,11 +14,13 @@ import org.springframework.stereotype.Service;
 
 import com.ss.spring_security.dao.RoleRepository;
 import com.ss.spring_security.dao.UserRepository;
+import com.ss.spring_security.dto.JwtAuthResponse;
 import com.ss.spring_security.dto.LoginDto;
 import com.ss.spring_security.dto.RegisterDto;
 import com.ss.spring_security.entity.Role;
 import com.ss.spring_security.entity.User;
 import com.ss.spring_security.exception.TodoAPIException;
+import com.ss.spring_security.security.JwtTokenProvider;
 import com.ss.spring_security.service.AuthService;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
 	private RoleRepository roleRepository;
 	private PasswordEncoder passwordEncoder;
 	private AuthenticationManager authenticationManager;
+	private JwtTokenProvider jwtTokenProvider;
 
 	@Override
 	public String register(RegisterDto registerDto) {
@@ -61,11 +65,32 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public String login(LoginDto loginDto) {
+	public JwtAuthResponse login(LoginDto loginDto) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return "User Logged-in Successful...";
+
+		String token = jwtTokenProvider.generateToken(authentication);
+		Optional<User> userOptional = userRepository.findByUserNameOrEmail(loginDto.getUsernameOrEmail(),
+				loginDto.getUsernameOrEmail());
+
+		String role = null;
+
+		if (userOptional.isPresent()) {
+			User loggedInUser = userOptional.get();
+			Optional<Role> optionalRole = loggedInUser.getRoles().stream().findFirst();
+
+			if (optionalRole.isPresent()) {
+				Role userRole = optionalRole.get();
+				role = userRole.getName();
+			}
+		}
+
+		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+		jwtAuthResponse.setRole(role);
+		jwtAuthResponse.setAccessToken(token);
+
+		return jwtAuthResponse;
 	}
 
 }

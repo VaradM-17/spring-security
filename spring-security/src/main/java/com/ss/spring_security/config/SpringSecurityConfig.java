@@ -1,6 +1,5 @@
 package com.ss.spring_security.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,13 +11,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.ss.spring_security.security.JwtAuthenticationEntryPoint;
+import com.ss.spring_security.security.JwtAuthenticationFilter;
+
+import lombok.AllArgsConstructor;
 
 @Configuration // Marks this class as a configuration class for Spring
 @EnableMethodSecurity // Enables method-level security using annotations like @PreAuthorize
+@AllArgsConstructor
 public class SpringSecurityConfig {
 
-	@Autowired
 	private UserDetailsService userDetailsService; // Injects custom UserDetailsService (used to load user from DB)
+	private JwtAuthenticationEntryPoint authenticationEntyPoint;
+	private JwtAuthenticationFilter authenticationFilter;
 
 	@Bean
 	public static PasswordEncoder passwordEncoder() {
@@ -39,6 +46,9 @@ public class SpringSecurityConfig {
 				}).httpBasic(Customizer.withDefaults()); // Use HTTP Basic authentication (username & password in
 															// header)
 
+		http.exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntyPoint));
+		http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+		
 		return http.build(); // Build and return the SecurityFilterChain
 	}
 
