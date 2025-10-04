@@ -1,4 +1,4 @@
-# 🔐 Spring Security - Database Authentication & Authorization
+# 🔐 Spring Security with JWT — Database Authentication & Authorization
 
 Hey there! 👋
 
