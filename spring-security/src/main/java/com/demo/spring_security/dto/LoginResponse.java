@@ -4,9 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class Role {
-    private String name;
+public class LoginResponse {
+    private String jwtToken;
+    private String username;
+    private List<String> roles;
 }
+
+
